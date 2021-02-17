@@ -18,4 +18,6 @@ public interface CustomerServices
     List<OrderCounts> getOrderCounts();
 
     Customer update(long id, Customer customer);
+
+    void delete(long id);
 }

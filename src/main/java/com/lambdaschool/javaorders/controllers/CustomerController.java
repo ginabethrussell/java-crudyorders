@@ -96,6 +96,15 @@ public class CustomerController
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    // http://localhost:2019/customers/customer/{custcode}
+    // Delete route to delete an existing customer, no body data returned, status OK
+    @DeleteMapping(value="/customer/{custcode}")
+    public ResponseEntity<?> deleteCustomer(@PathVariable long custcode)
+    {
+        customerServices.delete(custcode);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
 }
 
 
