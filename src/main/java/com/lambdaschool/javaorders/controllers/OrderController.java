@@ -53,6 +53,16 @@ public class OrderController
         responseHeaders.setLocation(newOrderURI);
 
         return new ResponseEntity<>(responseHeaders, HttpStatus.CREATED);
+    }
+
+    @PutMapping(value="/order/{ordnum}", consumes = "application/json")
+    public ResponseEntity<?> updateFullOrder(@Valid @RequestBody Order updatedOrder, @PathVariable long ordnum)
+    {
+        updatedOrder.setOrdnum(ordnum);
+        updatedOrder = orderServices.save(updatedOrder);
+        System.out.println(updatedOrder);
+
+        return new ResponseEntity<>(HttpStatus.OK);
 
     }
 }
