@@ -83,4 +83,17 @@ public class OrderServiceImpl implements OrderServices
         }
         return orderAdvAmt;
     }
+
+    @Transactional
+    @Override
+    public void delete(long id)
+    {
+        if (orderRepository.findById(id).isPresent())
+        {
+            orderRepository.deleteById(id);
+        } else
+        {
+            throw new EntityNotFoundException("Order " + id + " Not Found");
+        }
+    }
 }
