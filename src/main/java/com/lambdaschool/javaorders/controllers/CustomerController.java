@@ -61,7 +61,7 @@ public class CustomerController
     }
 
     // http://localhost:2019/customers/customer
-    // Post route to create a new customer, no body data returned
+    // Post route to create a new customer, no body data returned, status Created
     @PostMapping(value="/customer", consumes="application/json")
     public ResponseEntity<?> addCustomer(@Valid @RequestBody Customer newCustomer)
     {
@@ -77,13 +77,22 @@ public class CustomerController
         return new ResponseEntity<>(responseHeaders, HttpStatus.CREATED);
     }
 
-    // http://localhost:2019/customers/customer
-    // Post route to create a new customer, no body data returned
-    @PutMapping(value="/customer/{custcode}", produces = "application/json", consumes="application/json")
+    // http://localhost:2019/customers/customer/{custcode}
+    // Put route to overwrite an existing customer, no body data returned, status OK
+    @PutMapping(value="/customer/{custcode}", consumes="application/json")
     public ResponseEntity<?> updateCustomer(@Valid @RequestBody Customer existingCustomer, @PathVariable long custcode)
     {
         existingCustomer.setCustcode(custcode);
         existingCustomer = customerServices.save(existingCustomer);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    // http://localhost:2019/customers/customer/{custcode}
+    // Patch route to edit an existing customer, no body data returned, status OK
+    @PatchMapping(value="/customer/{custcode}", consumes="application/json")
+    public ResponseEntity<?> editCustomer(@RequestBody Customer customerData, @PathVariable long custcode)
+    {
+        customerData = customerServices.update(custcode, customerData);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

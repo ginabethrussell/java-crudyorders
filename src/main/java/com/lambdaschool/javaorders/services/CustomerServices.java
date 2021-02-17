@@ -16,4 +16,6 @@ public interface CustomerServices
     List<Customer> findByNameLike(String likename);
 
     List<OrderCounts> getOrderCounts();
+
+    Customer update(long id, Customer customer);
 }

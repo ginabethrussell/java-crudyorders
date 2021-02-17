@@ -117,4 +117,89 @@ public class CustomerServiceImpl implements CustomerServices
         List<OrderCounts> orderCounts = customerRepository.getOrderCounts();
         return orderCounts;
     }
+
+    @Transactional
+    @Override
+    public Customer update(
+        long id,
+        Customer customer)
+    {
+        Customer currentCustomer = customerRepository.findById(id)
+            .orElseThrow(() -> new EntityNotFoundException("Customer " + id + " Not Found"));
+
+        // if data is present, overwrite currentCustomer
+        // set string types from customer object
+
+        if (customer.getCustname() != null){
+            currentCustomer.setCustname(customer.getCustname());
+        }
+        if (customer.getCustcity() != null){
+            currentCustomer.setCustcity(customer.getCustcity());
+        }
+        if (customer.getCustcountry() != null){
+            currentCustomer.setCustcountry(customer.getCustcountry());
+        }
+        if (customer.getGrade() != null){
+            currentCustomer.setGrade(customer.getGrade());
+        }
+        if (customer.getPhone() != null){
+            currentCustomer.setPhone(customer.getPhone());
+        }
+        if (customer.getWorkingarea() != null){
+            currentCustomer.setWorkingarea(customer.getWorkingarea());
+        }
+
+        // use boolean flags to check to update doubles
+        if (customer.hasvalueforopeningamount)
+        {
+            currentCustomer.setOpeningamt(customer.getOpeningamt());
+        }
+        if (customer.hasvalueforoutstandingamount)
+        {
+            currentCustomer.setOutstandingamt(customer.getOutstandingamt());
+        }
+        if (customer.hasvalueforpaymentamount)
+        {
+            currentCustomer.setPaymentamt(customer.getPaymentamt());
+        }
+        if (customer.hasvalueforreceiveamount)
+        {
+            currentCustomer.setReceiveamt(customer.getReceiveamt());
+        }
+
+        // handle collections
+        // assign agent from agentrepository
+        if (customer.getAgent().getAgentcode() != 0){
+            Agent customerAgent = agentRepository.findById(customer.getAgent()
+                .getAgentcode())
+                .orElseThrow(() -> new EntityNotFoundException("Agent " + customer.getAgent()
+                    .getAgentcode() + " Not Found"));
+            currentCustomer.setAgent(customerAgent);
+        }
+
+
+        // assign orders to customer
+        if (customer.getOrders().size() > 0)
+        {
+            currentCustomer.getOrders().clear();
+            for (Order o : customer.getOrders())
+            {
+                Order newOrder = new Order();
+                newOrder.setOrdamount(o.getOrdamount());
+                newOrder.setAdvanceamount(o.getAdvanceamount());
+                newOrder.setOrderdescription(o.getOrderdescription());
+                newOrder.setCustomer(currentCustomer);
+
+                for (Payment p : o.getPayments())
+                {
+                    Payment newPay = paymentRepository.findById(p.getPaymentid())
+                        .orElseThrow(() -> new EntityNotFoundException("Payment " + p.getPaymentid() + " Not Found"));
+                    newOrder.getPayments().add(newPay);
+                }
+                currentCustomer.getOrders().add(newOrder);
+            }
+        }
+
+        return customerRepository.save(currentCustomer);
+    }
 }
