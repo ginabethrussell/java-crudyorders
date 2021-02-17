@@ -77,6 +77,16 @@ public class CustomerController
         return new ResponseEntity<>(responseHeaders, HttpStatus.CREATED);
     }
 
+    // http://localhost:2019/customers/customer
+    // Post route to create a new customer, no body data returned
+    @PutMapping(value="/customer/{custcode}", produces = "application/json", consumes="application/json")
+    public ResponseEntity<?> updateCustomer(@Valid @RequestBody Customer existingCustomer, @PathVariable long custcode)
+    {
+        existingCustomer.setCustcode(custcode);
+        existingCustomer = customerServices.save(existingCustomer);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
 }
 
 

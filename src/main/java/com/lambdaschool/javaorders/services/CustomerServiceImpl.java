@@ -29,11 +29,19 @@ public class CustomerServiceImpl implements CustomerServices
     @Autowired
     private PaymentRepository paymentRepository;
 
+    // For PUT and POST requests
     @Transactional
     @Override
     public Customer save(Customer customer)
     {
         Customer newCustomer = new Customer();
+
+        if(customer.getCustcode() != 0)
+        {
+            customerRepository.findById(customer.getCustcode())
+                .orElseThrow(() -> new EntityNotFoundException("Customer " + customer.getCustcode() + " Not Found"));
+            newCustomer.setCustcode(customer.getCustcode());
+        }
 
         // assign string types from customer object
         newCustomer.setCustcity(customer.getCustcity());
