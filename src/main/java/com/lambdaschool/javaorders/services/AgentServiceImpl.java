@@ -29,4 +29,18 @@ public class AgentServiceImpl implements AgentServices
         .orElseThrow(() -> new EntityNotFoundException("Agent " + id + " Not Found!"));
         return agent;
     }
+
+    @Override
+    public void deleteUnassignedAgent(long id)
+    {
+       Agent unassignedAgent = agentRepository.findById(id)
+           .orElseThrow(()-> new EntityNotFoundException("Agent " + id + " Not Found"));
+       if (unassignedAgent.getCustomers().size() > 0 )
+       {
+           throw new EntityNotFoundException("Found a customer for agent " + id);
+       }else
+       {
+           agentRepository.deleteById(id);
+       }
+    }
 }
